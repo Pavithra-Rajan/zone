@@ -26,11 +26,7 @@ type TimelineEvent = {
   type: "existing" | "proposed";
 };
 
-const existingEvents: TimelineEvent[] = [
-  { id: "1", title: "Team Standup", startHour: 9, duration: 0.5, type: "existing" },
-  { id: "2", title: "Lunch Break", startHour: 12, duration: 1, type: "existing" },
-  { id: "3", title: "Client Call", startHour: 15, duration: 1, type: "existing" },
-];
+const existingEvents: TimelineEvent[] = [];
 
 const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -47,37 +43,136 @@ const Index = () => {
     setTasks([]);
     setProposedEvents([]);
 
-    // Simulate step-by-step processing
+    // Choose API endpoint: during local dev call backend on port 8000.
+    const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const apiEndpoint = isLocalhost ? "http://localhost:8000/api/parse" : "/api/parse";
+
+    // Start the network request early so we can run the UI processing animation concurrently.
+    const apiPromise = fetch(apiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, date_iso: new Date().toISOString().slice(0, 10) }),
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to parse brain dump");
+        return res.json();
+      })
+      .catch((err) => {
+        console.error("/api/parse error:", err);
+        toast.error("Failed to contact the scheduling service.");
+        return { tasks: [] };
+      });
+
+    // Simulate step-by-step processing while the API call runs.
     for (let i = 0; i < processingSteps.length; i++) {
-      setCompletedSteps(prev => [...prev, processingSteps[i]]);
+      setCompletedSteps((prev) => [...prev, processingSteps[i]]);
       setCurrentStep(i);
-      await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 400));
+      await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 500));
     }
 
-    // Generate mock tasks from the input
-    const mockTasks: Task[] = [
-      { id: "t1", title: "Deep work session - Project Alpha", duration: 90, priority: 1, startTime: "10:00" },
-      { id: "t2", title: "Review design mockups", duration: 45, priority: 2, startTime: "13:30" },
-      { id: "t3", title: "Email follow-ups", duration: 30, priority: 3, startTime: "14:15" },
-      { id: "t4", title: "Strategic planning", duration: 60, priority: 1, startTime: "16:30" },
-      { id: "t5", title: "End-of-day review", duration: 15, priority: 3, startTime: "18:00" },
-    ];
+    // Await the parsed tasks from the backend
+    const result = await apiPromise;
+    console.debug("Parse API result:", result);
+    const parsed: any[] = (result && result.tasks) || [];
 
-    const mockProposed = [
-      { id: "p1", title: "Deep Work: Project Alpha", startHour: 10, duration: 1.5, type: "proposed" as const },
-      { id: "p2", title: "Review Design Mockups", startHour: 13.5, duration: 0.75, type: "proposed" as const },
-      { id: "p3", title: "Email Follow-ups", startHour: 14.25, duration: 0.5, type: "proposed" as const },
-      { id: "p4", title: "Strategic Planning", startHour: 16.5, duration: 1, type: "proposed" as const },
-      { id: "p5", title: "End-of-Day Review", startHour: 18, duration: 0.25, type: "proposed" as const },
-    ];
+    // Map backend task shape to frontend Task shape
+    const mappedTasks: Task[] = parsed.map((t: any, idx: number) => {
+      const priorityRaw = (t.priority || "P2").toString().toUpperCase();
+      const priority = priorityRaw.includes("1") ? 1 : priorityRaw.includes("2") ? 2 : 3;
+      const duration = t.estimated_duration_minutes ?? t.duration ?? 30;
+      const startTime = t.fixed_time_iso
+        ? new Date(t.fixed_time_iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : t.start_time || undefined;
+
+      return {
+        id: t.id || `t${idx + 1}`,
+        title: t.title || t.summary || `Task ${idx + 1}`,
+        duration,
+        priority,
+        startTime,
+      };
+    });
+
+    // Build proposed timeline events for tasks that include a fixed start time.
+    const mockProposed = parsed
+      .filter((t: any) => t.fixed_time_iso)
+      .map((t: any, idx: number) => {
+        const d = new Date(t.fixed_time_iso);
+        const startHour = d.getHours() + d.getMinutes() / 60;
+        const duration = (t.estimated_duration_minutes ?? 30) / 60;
+        return {
+          id: `p${t.id || idx}`,
+          title: t.title || t.summary || "Proposed Task",
+          startHour,
+          duration,
+          type: "proposed" as const,
+        };
+      });
 
     setCurrentStep(processingSteps.length);
-    setTasks(mockTasks);
+    setTasks(mappedTasks);
     setProposedEvents(mockProposed);
+    
+    // Call optimize endpoint to place tasks into today's schedule
+    try {
+      const optimizeEndpoint = isLocalhost ? "http://localhost:8000/api/optimize" : "/api/optimize";
+      const optRes = await fetch(optimizeEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tasks: parsed }),
+      });
+
+      if (optRes.ok) {
+        const optJson = await optRes.json();
+        console.debug("Optimize API result:", optJson);
+        const events: any[] = optJson.events || [];
+
+        // Map schedule events into timeline and update task start times when possible
+        const scheduledProposed: TimelineEvent[] = events
+          .filter((e) => e.event_type === "task")
+          .map((e, idx) => {
+            const start = new Date(e.start_iso);
+            const end = new Date(e.end_iso);
+            const startHour = start.getHours() + start.getMinutes() / 60;
+            const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+            return {
+              id: e.summary ? `p-${idx}-${e.summary}` : `p-${idx}`,
+              title: e.summary,
+              startHour,
+              duration,
+              type: "proposed" as const,
+            };
+          });
+
+        // Update mappedTasks with scheduled times when possible (match by title substring)
+        const updatedTasks = mappedTasks.map((mt) => {
+          const match = events.find((ev: any) => {
+            if (!ev.summary) return false;
+            return ev.summary.toLowerCase().includes((mt.title || "").toLowerCase()) || (mt.title || "").toLowerCase().includes(ev.summary.toLowerCase());
+          });
+          if (match) {
+            const s = new Date(match.start_iso);
+            return { ...mt, startTime: s.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
+          }
+          return mt;
+        });
+
+        setTasks(updatedTasks);
+        if (scheduledProposed.length > 0) setProposedEvents((prev) => [...prev.filter((p) => p.type !== "proposed"), ...scheduledProposed]);
+        if (events.length === 0) {
+          toast.warning("No tasks could be scheduled into today's free windows.");
+        }
+      } else {
+        console.error("Optimize request failed", optRes.statusText);
+      }
+    } catch (err) {
+      console.error("/api/optimize error:", err);
+      toast.error("Schedule optimization failed.");
+    }
     setIsProcessing(false);
 
     toast.success("Schedule optimized!", {
-      description: `Found ${mockTasks.length} tasks and scheduled them around your existing events.`,
+      description: `Found ${mappedTasks.length} tasks and scheduled them around your existing events.`,
     });
   };
 
@@ -125,6 +220,7 @@ const Index = () => {
               events={[...existingEvents, ...proposedEvents]}
               proposedTasks={tasks}
               hoveredTaskId={hoveredTaskId}
+              isProcessing={isProcessing}
             />
           </div>
         </div>

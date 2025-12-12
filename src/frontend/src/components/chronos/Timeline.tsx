@@ -14,11 +14,18 @@ interface TimelineProps {
   events: TimelineEvent[];
   proposedTasks: Task[];
   hoveredTaskId: string | null;
+  isProcessing?: boolean;
 }
 
 const hours = Array.from({ length: 13 }, (_, i) => i + 8); // 08:00 to 20:00
 
-export function Timeline({ events, proposedTasks, hoveredTaskId }: TimelineProps) {
+const formatTime = (decimalHour: number): string => {
+  const hours = Math.floor(decimalHour);
+  const minutes = Math.round((decimalHour - hours) * 60);
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+};
+
+export function Timeline({ events, proposedTasks, hoveredTaskId, isProcessing = false }: TimelineProps) {
   const getEventPosition = (startHour: number, duration: number) => {
     const top = (startHour - 8) * 64; // 64px per hour
     const height = duration * 64;
@@ -34,7 +41,17 @@ export function Timeline({ events, proposedTasks, hoveredTaskId }: TimelineProps
         <h2 className="text-lg font-medium text-foreground">Today's Schedule</h2>
       </div>
 
-      <div className="relative">
+      {isProcessing ? (
+        <div className="flex items-center justify-center h-96 text-muted-foreground">
+          <div className="text-center">
+            <div className="animate-spin mb-4">
+              <Calendar className="h-8 w-8 text-primary/50" />
+            </div>
+            <p className="text-sm">Loading your optimized schedule...</p>
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
         {/* Time labels and grid */}
         <div className="space-y-0">
           {hours.map((hour) => (
@@ -65,7 +82,7 @@ export function Timeline({ events, proposedTasks, hoveredTaskId }: TimelineProps
                   {event.title}
                 </span>
                 <span className="text-xs text-foreground/70">
-                  {event.startHour}:00 - {event.startHour + event.duration}:00
+                  {formatTime(event.startHour)} - {formatTime(event.startHour + event.duration)}
                 </span>
               </div>
             );
@@ -86,7 +103,8 @@ export function Timeline({ events, proposedTasks, hoveredTaskId }: TimelineProps
             </div>
           )}
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

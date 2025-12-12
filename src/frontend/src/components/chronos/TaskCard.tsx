@@ -13,6 +13,7 @@ interface TaskCardProps {
   task: Task;
   onHover: (taskId: string | null) => void;
   isHovered: boolean;
+  index?: number;
 }
 
 const priorityLabels = {
@@ -21,11 +22,13 @@ const priorityLabels = {
   3: "P3",
 };
 
-export function TaskCard({ task, onHover, isHovered }: TaskCardProps) {
+export function TaskCard({ task, onHover, isHovered, index = 0 }: TaskCardProps) {
+  const isEven = index % 2 === 0;
   return (
     <div
       className={cn(
         "glass-card p-4 cursor-pointer transition-all duration-200 group",
+        isEven ? "bg-slate-950/40" : "bg-slate-900/40",
         isHovered && "glass-card-glow scale-[1.02]"
       )}
       onMouseEnter={() => onHover(task.id)}

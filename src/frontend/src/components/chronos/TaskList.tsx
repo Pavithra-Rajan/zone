@@ -29,6 +29,7 @@ export function TaskList({ tasks, hoveredTaskId, onTaskHover }: TaskListProps) {
               task={task}
               onHover={onTaskHover}
               isHovered={hoveredTaskId === task.id}
+              index={index}
             />
           </div>
         ))}
