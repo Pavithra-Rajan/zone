@@ -35,6 +35,7 @@ const Index = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [hoveredTaskId, setHoveredTaskId] = useState<string | null>(null);
   const [proposedEvents, setProposedEvents] = useState<TimelineEvent[]>([]);
+  const [scheduledEvents, setScheduledEvents] = useState<any[]>([]);
 
   const simulateProcessing = async (text: string) => {
     setIsProcessing(true);
@@ -159,6 +160,8 @@ const Index = () => {
 
         setTasks(updatedTasks);
         if (scheduledProposed.length > 0) setProposedEvents((prev) => [...prev.filter((p) => p.type !== "proposed"), ...scheduledProposed]);
+        // Save the raw optimized schedule returned from the backend so we can sync it to Google Calendar
+        setScheduledEvents(events);
         if (events.length === 0) {
           toast.warning("No tasks could be scheduled into today's free windows.");
         }
@@ -176,10 +179,49 @@ const Index = () => {
     });
   };
 
-  const handleSync = () => {
-    toast.success("Synced to Google Calendar!", {
-      description: "Your optimized schedule has been added to your calendar.",
-    });
+  const handleSync = async () => {
+    if (scheduledEvents.length === 0) {
+      toast.warning("No scheduled events to sync.", {
+        description: "Please run optimization first so there is a schedule to send to Google Calendar.",
+      });
+      return;
+    }
+
+    const isLocalhost =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+    const scheduleEndpoint = isLocalhost
+      ? "http://localhost:8000/api/schedule"
+      : "/api/schedule";
+
+    try {
+      toast.info("Syncing to Google Calendar...", {
+        description: "Sending your optimized schedule to the calendar service.",
+      });
+
+      const res = await fetch(scheduleEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ events: scheduledEvents }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("/api/schedule failed:", res.status, text);
+        toast.error("Failed to sync to Google Calendar.");
+        return;
+      }
+
+      const json = await res.json().catch(() => ({}));
+      console.debug("Schedule API response:", json);
+
+      toast.success("Synced to Google Calendar!", {
+        description: "Your optimized schedule has been added to your calendar.",
+      });
+    } catch (err) {
+      console.error("/api/schedule error:", err);
+      toast.error("Schedule sync failed.");
+    }
   };
 
   const handleRefine = () => {

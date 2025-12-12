@@ -91,15 +91,16 @@ def get_calendar_events(service, calendar_id='primary'):
     try:
         # Define the time range for the query
         
-        # 1. Get the current time (must be in RFC3339 format)
+        # 1. Get current UTC time
         now = datetime.now(timezone.utc)
-        
-        # 2. Set the start time to the current time (querying from now)
-        time_min = now.isoformat().replace('+00:00', 'Z') 
-        
-        # 3. Set the end time 7 days from now
-        future = now + timedelta(days=7)
-        time_max = future.isoformat().replace('+00:00', 'Z')
+
+        # 2. Set start time to *today at 00:00 UTC*
+        start_of_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        time_min = start_of_today.isoformat().replace("+00:00", "Z")
+
+        # 3. Set end time to 7 days from now
+        future = start_of_today + timedelta(days=7)
+        time_max = future.isoformat().replace("+00:00", "Z")
 
         print(f"\nFetching events for Calendar ID: {calendar_id}")
         print(f"Time Range: {now.date()} to {future.date()}")
@@ -116,6 +117,16 @@ def get_calendar_events(service, calendar_id='primary'):
         
         events = events_result.get('items', [])
 
+        time_ranges = []
+
+        for event in events:
+            start = event.get("start", {}).get("dateTime")
+            end = event.get("end", {}).get("dateTime")
+            time_ranges.append({"start": start, "end": end})
+
+        print("\n--- Upcoming Events ---")
+
+        print(time_ranges)
         
         # pretty_json_string = json.dumps(events,indent=4,sort_keys=True )
         # print(pretty_json_string)
@@ -133,50 +144,66 @@ def get_calendar_events(service, calendar_id='primary'):
         #     print(f"- {start} | {summary}")
             
         # print("-" * 50)
-        return events
+        return time_ranges
 
     except HttpError as error:
         print(f"An error occurred while fetching events: {error}")
 
 
-def create_calendar_event(service):
+def create_calendar_event(service, item: dict):
     """Creates a simple 1-hour event on the user's primary calendar."""
     
     # --- 1. Define the Event Details ---
     
     # Define start and end times in RFC 3339 format
-    start_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
-    end_time = start_time + datetime.timedelta(hours=1)
-    
+
+
     event_body = {
-        'summary': 'Team Sync-Up Meeting (Python API Test)',
-        'location': 'Online via Google Meet',
-        'description': 'A quick test event created using the Google Calendar Python API.',
-        
-        # Date/Time details must include the timezone
+        'summary': item['summary'],
+        'location': 'Created by Zone',     # or item.get("location")
+        'description': item['description'],
+
         'start': {
-            'dateTime': start_time.isoformat(),
-            'timeZone': 'America/New_York', # Use your preferred timezone
-        },
-        'end': {
-            'dateTime': end_time.isoformat(),
+            'dateTime': item['start_iso'],
             'timeZone': 'America/New_York',
         },
-        
-        # Optional: Add attendees
-        'attendees': [
-            {'email': 'pavithra.rajan01@gmail.com'}, # Replace with actual emails
-            {'email': 'annasusanc@gmail.com'},
-        ],
-        
-        # Optional: Add a conference link (e.g., Google Meet)
-        'conferenceData': {
-            'createRequest': {
-                'requestId': 'meeting-request-123',
-                'conferenceSolutionKey': {'type': 'hangoutsMeet'}
-            }
+        'end': {
+            'dateTime': item['end_iso'],
+            'timeZone': 'America/New_York',
         }
     }
+    
+    # start_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
+    # end_time = start_time + datetime.timedelta(hours=1)
+    # event_body = {
+    #     'summary': 'Team Sync-Up Meeting (Python API Test)',
+    #     'location': 'Online via Google Meet',
+    #     'description': 'A quick test event created using the Google Calendar Python API.',
+        
+    #     # Date/Time details must include the timezone
+    #     'start': {
+    #         'dateTime': start_time.isoformat(),
+    #         'timeZone': 'America/New_York', # Use your preferred timezone
+    #     },
+    #     'end': {
+    #         'dateTime': end_time.isoformat(),
+    #         'timeZone': 'America/New_York',
+    #     },
+        
+    #     # Optional: Add attendees
+    #     'attendees': [
+    #         {'email': 'pavithra.rajan01@gmail.com'}, # Replace with actual emails
+    #         {'email': 'annasusanc@gmail.com'},
+    #     ],
+        
+    #     # Optional: Add a conference link (e.g., Google Meet)
+    #     'conferenceData': {
+    #         'createRequest': {
+    #             'requestId': 'meeting-request-123',
+    #             'conferenceSolutionKey': {'type': 'hangoutsMeet'}
+    #         }
+    #     }
+    # }
 
     # --- 2. Make the API Call ---
     try:
@@ -204,7 +231,7 @@ def gcal_events():
         
         service = build("calendar", "v3", credentials=creds)
 
-        get_calendar_events(service, calendar_id='primary')
+        return get_calendar_events(service, calendar_id='primary')
         
 # --- Main Execution ---
 # def main():

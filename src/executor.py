@@ -55,6 +55,10 @@ class OptimizeRequest(BaseModel):
     free_windows: Optional[List[dict]] = None
 
 
+class ScheduleRequest(BaseModel):
+    events: List[dict]
+
+
 
 
 app = FastAPI()
@@ -73,10 +77,7 @@ app.add_middleware(
 def parse_brain_dump(req: ParseRequest):
     date_iso = req.date_iso or (os.environ.get("CURRENT_DATE") or None)
     try:
-
-        current_calendar_events = gcal_events = gcal.get_calendar_events()
-
-        tasks = parse_goals_to_tasks(req.text, date_iso or "", current_calendar_events)
+        tasks = parse_goals_to_tasks(req.text, date_iso or "")
 
         # Optionally log to memory
         try:
@@ -103,7 +104,10 @@ def optimize_schedule_endpoint(req: OptimizeRequest):
             }]
 
         logger.debug("Optimize request: tasks=%s free_windows=%s", req.tasks, free_windows)
-        schedule = optimize_schedule(req.tasks, free_windows)
+        current_calendar_events = gcal.gcal_events()
+
+        print(f"Current Calendar Events: {current_calendar_events}")
+        schedule = optimize_schedule(req.tasks, current_calendar_events, free_windows)
         try:
             log_memory({"type": "optimize", "tasks": req.tasks, "schedule": schedule})
         except Exception:
@@ -113,4 +117,37 @@ def optimize_schedule_endpoint(req: OptimizeRequest):
     except Exception as e:
         logger.exception("Error while optimizing schedule")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@app.post("/api/schedule")
+def schedule_events(req: ScheduleRequest):
+    try:
+        items = req.events or []
+        if len(items) == 0:
+            raise HTTPException(status_code=400, detail="No events provided")
+
+        # Authenticate once and build service
+        creds = gcal.authenticate_google_calendar()
+        service = gcal.build("calendar", "v3", credentials=creds)
+
+        created = []
+        failed = []
+        for idx, item in enumerate(items):
+            try:
+                # Expecting item to contain keys like summary, start_iso, end_iso, description
+                gcal.create_calendar_event(service, item)
+                created.append({"index": idx, "summary": item.get("summary")})
+            except Exception as e:
+                logger.exception("Failed creating calendar event: %s", item)
+                failed.append({"index": idx, "error": str(e)})
+
+        return {"created": created, "failed": failed}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error while scheduling events")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
