@@ -72,7 +72,7 @@ class GeminiExecutor:
         Duration: estimate if missing (call=15m, gym=60m, meeting=30m, work=120m)
         Constraints: if user says "at 1pm", mark constraint_type="fixed" and set fixed_time_iso
         IDs: short unique strings (t1, t2, etc)
-        Split tasks >3 hours into 2-hour blocks with 15min breaks.
+        Split tasks >2 hours into 1-hour blocks with 15min breaks.
         Be concise. Output only valid JSON.
         """
         
@@ -84,7 +84,8 @@ class GeminiExecutor:
         )
         
         try:
-            logger.debug(f"Parser Response: {response.text}")
+            # logger.debug(f"Parser Response: {response.text}")
+            print(json.dumps(response.text, indent=2))
             return json.loads(response.text)
         except json.JSONDecodeError:
             logger.error("Error: Gemini failed to produce valid JSON.")
@@ -119,6 +120,7 @@ class GeminiExecutor:
             f"Optimize this schedule:\n{prompt_payload}",
             generation_config=genai.GenerationConfig(response_schema=list[ScheduleEvent])
         )
+        print(json.dumps(response.text, indent=2))
 
         return json.loads(response.text)
 
@@ -179,23 +181,3 @@ def optimize_schedule(req: OptimizeRequest):
     except Exception as e:
         logger.exception("Error while optimizing schedule")
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
-# if __name__ == "__main__":
-#     # Mock Data
-#     executor = GeminiExecutor()
-    
-#     # 1. Test Parser
-#     user_input = ""
-#     tasks = executor.parse_goals_to_tasks(user_input, "2023-10-27")
-#     logger.info("Parsed Tasks\n")
-#     logger.info(json.dumps(tasks, indent=2))
-    
-#     # 2. Test Scheduler (Mocking free windows)
-#     free_windows = [
-#         {"start": "2025-12-12T09:00:00", "end": "2025-12-12T23:00:00"}, # 3 hours morning
-#     ]
-#     schedule = executor.optimize_schedule(tasks, free_windows)
-#     logger.info("Optimized Schedule")
-#     logger.info(json.dumps(schedule, indent=2))

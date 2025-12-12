@@ -22,13 +22,26 @@ const priorityLabels = {
   3: "P3",
 };
 
+// Dual color theme palettes for each task index
+const colorPalettes = [
+  { bg: "bg-blue-950/40", border: "border-blue-700/50", accent: "bg-blue-900/60" },
+  { bg: "bg-purple-950/40", border: "border-purple-700/50", accent: "bg-purple-900/60" },
+  { bg: "bg-pink-950/40", border: "border-pink-700/50", accent: "bg-pink-900/60" },
+  { bg: "bg-indigo-950/40", border: "border-indigo-700/50", accent: "bg-indigo-900/60" },
+  { bg: "bg-cyan-950/40", border: "border-cyan-700/50", accent: "bg-cyan-900/60" },
+  { bg: "bg-emerald-950/40", border: "border-emerald-700/50", accent: "bg-emerald-900/60" },
+  { bg: "bg-amber-950/40", border: "border-amber-700/50", accent: "bg-amber-900/60" },
+  { bg: "bg-rose-950/40", border: "border-rose-700/50", accent: "bg-rose-900/60" },
+];
+
 export function TaskCard({ task, onHover, isHovered, index = 0 }: TaskCardProps) {
-  const isEven = index % 2 === 0;
+  const palette = colorPalettes[index % colorPalettes.length];
   return (
     <div
       className={cn(
-        "glass-card p-4 cursor-pointer transition-all duration-200 group",
-        isEven ? "bg-slate-950/40" : "bg-slate-900/40",
+        "glass-card p-4 cursor-pointer transition-all duration-200 group border",
+        palette.bg,
+        palette.border,
         isHovered && "glass-card-glow scale-[1.02]"
       )}
       onMouseEnter={() => onHover(task.id)}
