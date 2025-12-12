@@ -7,7 +7,7 @@ export function Header() {
         <Sparkles className="h-5 w-5 text-primary-foreground" />
       </div>
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Calendly</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Zone</h1>
         <p className="text-sm text-muted-foreground">Plan your day like never before</p>
       </div>
     </header>
