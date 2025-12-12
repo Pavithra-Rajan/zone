@@ -1,24 +1,25 @@
 ## 2. `ARCHITECTURE.md`
+### Architecture Diagram
+<img width="8299" height="3040" alt="image" src="https://github.com/user-attachments/assets/a1e2f23c-4aed-4ff7-acfc-800d88a8b11f" />
 
-```markdown
-# Architecture Overview
+### User Interface
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+- Integration with Google Calendar
 
-Below, sketch (ASCII, hand-drawn JPEG/PNG pasted in, or ASCII art) the high-level components of your agent.
-
-## Components
-
-1. **User Interface**  
-   - E.g., Streamlit, CLI, Slack bot  
-
-2. **Agent Core**  
+### Agent Core
    - **Planner**: how you break down tasks  
    - **Executor**: LLM prompt + tool-calling logic  
    - **Memory**: vector store, cache, or on-disk logs  
 
-3. **Tools / APIs**  
-   - E.g., Google Gemini API, Tools, etc
+### Tools/API
+- Google Gemini API Flash 2.5 model
+- Google Calendar API for fetching existing calendar events for the day and inserting the suggested plan for the day
 
-4. **Observability**  
-   - Logging of each reasoning step  
-   - Error handling / retries  
+### Observability
+- Logging of each reasoning step  
+- Error handling / retries  
 
