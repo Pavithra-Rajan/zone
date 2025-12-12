@@ -172,6 +172,9 @@ def create_calendar_event(service, item: dict):
             'timeZone': 'America/New_York',
         }
     }
+    # Include optional colorId if provided (Google Calendar accepts '1'..'11')
+    if item.get('colorId'):
+        event_body['colorId'] = str(item.get('colorId'))
     
     # start_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     # end_time = start_time + datetime.timedelta(hours=1)

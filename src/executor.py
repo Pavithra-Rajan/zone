@@ -4,6 +4,7 @@ import typing_extensions as typing
 import google.generativeai as genai
 from dataclasses import dataclass
 import logging
+import random
 import google_calendar_api as gcal
 
 logger = logging.getLogger(__name__)
@@ -100,7 +101,7 @@ def optimize_schedule_endpoint(req: OptimizeRequest):
             date_iso = os.environ.get("CURRENT_DATE") or datetime.date.today().isoformat()
             free_windows = [{
                 "start": f"{date_iso}T09:00:00",
-                "end": f"{date_iso}T21:00:00"
+                "end": f"{date_iso}T23:59:00"
             }]
 
         logger.debug("Optimize request: tasks=%s free_windows=%s", req.tasks, free_windows)
@@ -133,8 +134,18 @@ def schedule_events(req: ScheduleRequest):
 
         created = []
         failed = []
+        skipped = []
         for idx, item in enumerate(items):
             try:
+                # Don't create calendar events for breaks (we won't allot Google Calendar with breaks)
+                if item.get("event_type") == "break":
+                    skipped.append({"index": idx, "summary": item.get("summary"), "reason": "breaks not scheduled"})
+                    continue
+
+                # Randomly assign a colorId between '1' and '3' if not provided
+                if not item.get("colorId"):
+                    item["colorId"] = random.choice(["1", "3"])
+
                 # Expecting item to contain keys like summary, start_iso, end_iso, description
                 gcal.create_calendar_event(service, item)
                 created.append({"index": idx, "summary": item.get("summary")})
@@ -142,7 +153,7 @@ def schedule_events(req: ScheduleRequest):
                 logger.exception("Failed creating calendar event: %s", item)
                 failed.append({"index": idx, "error": str(e)})
 
-        return {"created": created, "failed": failed}
+        return {"created": created, "failed": failed, "skipped": skipped}
     except HTTPException:
         raise
     except Exception as e:

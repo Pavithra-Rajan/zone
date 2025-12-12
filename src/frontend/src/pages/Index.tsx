@@ -9,10 +9,10 @@ import { Task } from "@/components/chronos/TaskCard";
 import { toast } from "sonner";
 
 const processingSteps = [
-  "Fetching existing calendar events...",
   "Parsing your brain dump...",
   "Identifying tasks and priorities...",
   "Estimating durations...",
+  "Fetching existing calendar events from Google Calendar...",
   "Optimizing schedule...",
   "Resolving conflicts...",
   "Finalizing your day...",
