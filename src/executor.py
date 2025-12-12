@@ -23,6 +23,10 @@ from pydantic import BaseModel
 import uvicorn
 import datetime
 
+# Import planner and memory helpers
+from planner import parse_goals_to_tasks, optimize_schedule
+from memory import log_memory
+
 
 class Task(typing.TypedDict):
     id: str
@@ -39,90 +43,6 @@ class ScheduleEvent(typing.TypedDict):
     description: str
     event_type: str # "task", "break", "buffer"
 
-class GeminiExecutor:
-    def __init__(self, model_name="gemini-2.5-flash"):
-        """
-        Initializes the Gemini model wrapper.
-        Using 1.5-Flash is recommended for speed/cost on high-frequency tasks,
-        but 1.5-Pro is better for complex reasoning.
-        """
-        self.model_name = model_name
-        
-    def _get_json_model(self, system_instruction: str):
-        """
-        Helper to configure the model for JSON output mode.
-        """
-        return genai.GenerativeModel(
-            model_name=self.model_name,
-            system_instruction=system_instruction,
-            generation_config={
-                "response_mime_type": "application/json",
-                "temperature": 0.2, # Low temp for deterministic logic
-            }
-        )
-
-    def parse_goals_to_tasks(self, user_input: str, current_date_iso: str) -> list[Task]:
-        """
-        Agent 1: The Task Extractor
-        Converts raw text into a structured list of tasks with priorities.
-        """
-        system_prompt = f"""
-        You are a task parser. Extract tasks from user input.
-        Date: {current_date_iso}
-        Priority: P1=urgent, P2=standard, P3=low
-        Duration: estimate if missing (call=15m, gym=60m, meeting=30m, work=120m)
-        Constraints: if user says "at 1pm", mark constraint_type="fixed" and set fixed_time_iso
-        IDs: short unique strings (t1, t2, etc)
-        Split tasks >2 hours into 1-hour blocks with 15min breaks.
-        Be concise. Output only valid JSON.
-        """
-        
-        model = self._get_json_model(system_prompt)
-        
-        response = model.generate_content(
-            f"User Goal Description: {user_input}",
-            generation_config=genai.GenerationConfig(response_schema=list[Task])
-        )
-        
-        try:
-            logger.debug(f"Parser Response: {response.text}")
-            return json.loads(response.text)
-        except json.JSONDecodeError:
-            logger.error("Error: Gemini failed to produce valid JSON.")
-            return []
-
-    def optimize_schedule(self, tasks: list[Task], free_windows: list[dict]) -> list[ScheduleEvent]:
-        """
-        Agent 2: The Scheduler
-        Fits the parsed tasks into the provided free time windows (bin packing).
-        """
-        system_prompt = """
-        Schedule tasks into free windows. Output JSON list of events.
-        Priority: P1 first, then P2, then P3.
-        Rules:
-        - Don't exceed window duration
-        - Add 10min break between tasks if space allows
-        - Insert breaks explicitly as event_type='break'
-        - Use exact ISO start/end times
-        - Skip P3 if no time
-        Be concise. Output only valid JSON.
-        """
-
-        model = self._get_json_model(system_prompt)
-        
-        # Construct a payload describing the state
-        prompt_payload = json.dumps({
-            "tasks_to_schedule": tasks,
-            "available_time_windows": free_windows
-        }, indent=2)
-
-        response = model.generate_content(
-            f"Optimize this schedule:\n{prompt_payload}",
-            generation_config=genai.GenerationConfig(response_schema=list[ScheduleEvent])
-        )
-        logger.debug(f"Optimised schedule JSON {response.text}")
-
-        return json.loads(response.text)
 
 class ParseRequest(BaseModel):
     text: str
@@ -150,10 +70,14 @@ app.add_middleware(
 
 @app.post("/api/parse")
 def parse_brain_dump(req: ParseRequest):
-    exe = GeminiExecutor()
     date_iso = req.date_iso or (os.environ.get("CURRENT_DATE") or None)
     try:
-        tasks = exe.parse_goals_to_tasks(req.text, date_iso or "")
+        tasks = parse_goals_to_tasks(req.text, date_iso or "")
+        # Optionally log to memory
+        try:
+            log_memory({"type": "parse", "input": req.text, "tasks": tasks})
+        except Exception:
+            logger.debug("Memory logging failed for parse")
         return {"tasks": tasks}
     except Exception as e:
         logger.exception("Error while parsing brain dump")
@@ -162,8 +86,7 @@ def parse_brain_dump(req: ParseRequest):
 
 
 @app.post("/api/optimize")
-def optimize_schedule(req: OptimizeRequest):
-    exe = GeminiExecutor()
+def optimize_schedule_endpoint(req: OptimizeRequest):
     try:
         free_windows = req.free_windows
         if not free_windows:
@@ -171,11 +94,15 @@ def optimize_schedule(req: OptimizeRequest):
             date_iso = os.environ.get("CURRENT_DATE") or datetime.date.today().isoformat()
             free_windows = [{
                 "start": f"{date_iso}T09:00:00",
-                "end": f"{date_iso}T18:00:00"
+                "end": f"{date_iso}T21:00:00"
             }]
 
         logger.debug("Optimize request: tasks=%s free_windows=%s", req.tasks, free_windows)
-        schedule = exe.optimize_schedule(req.tasks, free_windows)
+        schedule = optimize_schedule(req.tasks, free_windows)
+        try:
+            log_memory({"type": "optimize", "tasks": req.tasks, "schedule": schedule})
+        except Exception:
+            logger.debug("Memory logging failed for optimize")
         logger.debug("Optimize response: %s", schedule)
         return {"events": schedule}
     except Exception as e:
