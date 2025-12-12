@@ -1,0 +1,408 @@
+Parser Response: [
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 120,
+    "fixed_time_iso": "null",
+    "id": "t1",
+    "priority": "P1",
+    "title": "Study for DAA final exam"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 120,
+    "fixed_time_iso": "null",
+    "id": "t2",
+    "priority": "P1",
+    "title": "Wrap up cloud project"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 15,
+    "fixed_time_iso": "null",
+    "id": "t3",
+    "priority": "P3",
+    "title": "Call mom"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 60,
+    "fixed_time_iso": "null",
+    "id": "t4",
+    "priority": "P2",
+    "title": "Hit the gym"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 60,
+    "fixed_time_iso": "null",
+    "id": "t5",
+    "priority": "P2",
+    "title": "Do meal prep"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 110,
+    "fixed_time_iso": "null",
+    "id": "t6",
+    "priority": "P3",
+    "title": "Watch Stranger things finale"
+  }
+]
+Optimize request: tasks=[{'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't1', 'priority': 'P1', 'title': 'Study for DAA final exam'}, {'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't2', 'priority': 'P1', 'title': 'Wrap up cloud project'}, {'constraint_type': 'null', 'estimated_duration_minutes': 15, 'fixed_time_iso': 'null', 'id': 't3', 'priority': 'P3', 'title': 'Call mom'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't4', 'priority': 'P2', 'title': 'Hit the gym'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't5', 'priority': 'P2', 'title': 'Do meal prep'}, {'constraint_type': 'null', 'estimated_duration_minutes': 110, 'fixed_time_iso': 'null', 'id': 't6', 'priority': 'P3', 'title': 'Watch Stranger things finale'}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T18:00:00'}]
+Optimised schedule JSON [
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T11:00:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T09:00:00",
+    "summary": "Study for DAA final exam"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T11:10:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T11:00:00",
+    "summary": "Break"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T13:10:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T11:10:00",
+    "summary": "Wrap up cloud project"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T13:20:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T13:10:00",
+    "summary": "Break"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T14:20:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T13:20:00",
+    "summary": "Hit the gym"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T14:30:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T14:20:00",
+    "summary": "Break"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T15:30:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T14:30:00",
+    "summary": "Do meal prep"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T15:40:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T15:30:00",
+    "summary": "Break"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T15:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T15:40:00",
+    "summary": "Call mom"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T16:05:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T15:55:00",
+    "summary": "Break"
+  },
+  {
+    "description": "null",
+    "end_iso": "2025-12-12T17:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T16:05:00",
+    "summary": "Watch Stranger things finale"
+  }
+]
+Optimize response: [{'description': 'null', 'end_iso': '2025-12-12T11:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T09:00:00', 'summary': 'Study for DAA final exam'}, {'description': 'null', 'end_iso': '2025-12-12T11:10:00', 'event_type': 'break', 'start_iso': '2025-12-12T11:00:00', 'summary': 'Break'}, {'description': 'null', 'end_iso': '2025-12-12T13:10:00', 'event_type': 'task', 'start_iso': '2025-12-12T11:10:00', 'summary': 'Wrap up cloud project'}, {'description': 'null', 'end_iso': '2025-12-12T13:20:00', 'event_type': 'break', 'start_iso': '2025-12-12T13:10:00', 'summary': 'Break'}, {'description': 'null', 'end_iso': '2025-12-12T14:20:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:20:00', 'summary': 'Hit the gym'}, {'description': 'null', 'end_iso': '2025-12-12T14:30:00', 'event_type': 'break', 'start_iso': '2025-12-12T14:20:00', 'summary': 'Break'}, {'description': 'null', 'end_iso': '2025-12-12T15:30:00', 'event_type': 'task', 'start_iso': '2025-12-12T14:30:00', 'summary': 'Do meal prep'}, {'description': 'null', 'end_iso': '2025-12-12T15:40:00', 'event_type': 'break', 'start_iso': '2025-12-12T15:30:00', 'summary': 'Break'}, {'description': 'null', 'end_iso': '2025-12-12T15:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T15:40:00', 'summary': 'Call mom'}, {'description': 'null', 'end_iso': '2025-12-12T16:05:00', 'event_type': 'break', 'start_iso': '2025-12-12T15:55:00', 'summary': 'Break'}, {'description': 'null', 'end_iso': '2025-12-12T17:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T16:05:00', 'summary': 'Watch Stranger things finale'}]
+Parser Response: [
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 120,
+    "fixed_time_iso": "null",
+    "id": "t1",
+    "priority": "P2",
+    "title": "Study for DAA final exam"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 120,
+    "fixed_time_iso": "null",
+    "id": "t2",
+    "priority": "P2",
+    "title": "Wrap up cloud project"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 15,
+    "fixed_time_iso": "null",
+    "id": "t3",
+    "priority": "P2",
+    "title": "Call mom"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 60,
+    "fixed_time_iso": "null",
+    "id": "t4",
+    "priority": "P2",
+    "title": "Hit the gym"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 60,
+    "fixed_time_iso": "null",
+    "id": "t5",
+    "priority": "P2",
+    "title": "Do meal prep"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 110,
+    "fixed_time_iso": "null",
+    "id": "t6",
+    "priority": "P2",
+    "title": "Watch Stranger Things finale"
+  }
+]
+Optimize request: tasks=[{'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't1', 'priority': 'P2', 'title': 'Study for DAA final exam'}, {'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't2', 'priority': 'P2', 'title': 'Wrap up cloud project'}, {'constraint_type': 'null', 'estimated_duration_minutes': 15, 'fixed_time_iso': 'null', 'id': 't3', 'priority': 'P2', 'title': 'Call mom'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't4', 'priority': 'P2', 'title': 'Hit the gym'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't5', 'priority': 'P2', 'title': 'Do meal prep'}, {'constraint_type': 'null', 'estimated_duration_minutes': 110, 'fixed_time_iso': 'null', 'id': 't6', 'priority': 'P2', 'title': 'Watch Stranger Things finale'}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T18:00:00'}]
+Optimised schedule JSON [
+  {
+    "description": "Study for DAA final exam",
+    "end_iso": "2025-12-12T11:00:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T09:00:00",
+    "summary": "Study for DAA final exam"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T11:10:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T11:00:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Wrap up cloud project",
+    "end_iso": "2025-12-12T13:10:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T11:10:00",
+    "summary": "Wrap up cloud project"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T13:20:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T13:10:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Call mom",
+    "end_iso": "2025-12-12T13:35:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T13:20:00",
+    "summary": "Call mom"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T13:45:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T13:35:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Hit the gym",
+    "end_iso": "2025-12-12T14:45:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T13:45:00",
+    "summary": "Hit the gym"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T14:55:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T14:45:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Do meal prep",
+    "end_iso": "2025-12-12T15:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T14:55:00",
+    "summary": "Do meal prep"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T16:05:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T15:55:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Watch Stranger Things finale",
+    "end_iso": "2025-12-12T17:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T16:05:00",
+    "summary": "Watch Stranger Things finale"
+  }
+]
+Optimize response: [{'description': 'Study for DAA final exam', 'end_iso': '2025-12-12T11:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T09:00:00', 'summary': 'Study for DAA final exam'}, {'description': '10 minute break', 'end_iso': '2025-12-12T11:10:00', 'event_type': 'break', 'start_iso': '2025-12-12T11:00:00', 'summary': 'Break'}, {'description': 'Wrap up cloud project', 'end_iso': '2025-12-12T13:10:00', 'event_type': 'task', 'start_iso': '2025-12-12T11:10:00', 'summary': 'Wrap up cloud project'}, {'description': '10 minute break', 'end_iso': '2025-12-12T13:20:00', 'event_type': 'break', 'start_iso': '2025-12-12T13:10:00', 'summary': 'Break'}, {'description': 'Call mom', 'end_iso': '2025-12-12T13:35:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:20:00', 'summary': 'Call mom'}, {'description': '10 minute break', 'end_iso': '2025-12-12T13:45:00', 'event_type': 'break', 'start_iso': '2025-12-12T13:35:00', 'summary': 'Break'}, {'description': 'Hit the gym', 'end_iso': '2025-12-12T14:45:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:45:00', 'summary': 'Hit the gym'}, {'description': '10 minute break', 'end_iso': '2025-12-12T14:55:00', 'event_type': 'break', 'start_iso': '2025-12-12T14:45:00', 'summary': 'Break'}, {'description': 'Do meal prep', 'end_iso': '2025-12-12T15:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T14:55:00', 'summary': 'Do meal prep'}, {'description': '10 minute break', 'end_iso': '2025-12-12T16:05:00', 'event_type': 'break', 'start_iso': '2025-12-12T15:55:00', 'summary': 'Break'}, {'description': 'Watch Stranger Things finale', 'end_iso': '2025-12-12T17:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T16:05:00', 'summary': 'Watch Stranger Things finale'}]
+Parser Response: [{"constraint_type": "null", "estimated_duration_minutes": 120, "fixed_time_iso": "null", "id": "t1", "priority": "P2", "title": "Study for DAA final exam"}, {"constraint_type": "null", "estimated_duration_minutes": 120, "fixed_time_iso": "null", "id": "t2", "priority": "P2", "title": "Wrap up cloud project"}, {"constraint_type": "null", "estimated_duration_minutes": 15, "fixed_time_iso": "null", "id": "t3", "priority": "P2", "title": "Call mom"}, {"constraint_type": "null", "estimated_duration_minutes": 60, "fixed_time_iso": "null", "id": "t4", "priority": "P2", "title": "Hit the gym"}, {"constraint_type": "null", "estimated_duration_minutes": 60, "fixed_time_iso": "null", "id": "t5", "priority": "P2", "title": "Meal prep"}, {"constraint_type": "null", "estimated_duration_minutes": 110, "fixed_time_iso": "null", "id": "t6", "priority": "P2", "title": "Watch Stranger Things finale"}]
+Optimize request: tasks=[{'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't1', 'priority': 'P2', 'title': 'Study for DAA final exam'}, {'constraint_type': 'null', 'estimated_duration_minutes': 120, 'fixed_time_iso': 'null', 'id': 't2', 'priority': 'P2', 'title': 'Wrap up cloud project'}, {'constraint_type': 'null', 'estimated_duration_minutes': 15, 'fixed_time_iso': 'null', 'id': 't3', 'priority': 'P2', 'title': 'Call mom'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't4', 'priority': 'P2', 'title': 'Hit the gym'}, {'constraint_type': 'null', 'estimated_duration_minutes': 60, 'fixed_time_iso': 'null', 'id': 't5', 'priority': 'P2', 'title': 'Meal prep'}, {'constraint_type': 'null', 'estimated_duration_minutes': 110, 'fixed_time_iso': 'null', 'id': 't6', 'priority': 'P2', 'title': 'Watch Stranger Things finale'}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T18:00:00'}]
+Optimised schedule JSON [
+  {
+    "description": "Study for DAA final exam",
+    "end_iso": "2025-12-12T11:00:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T09:00:00",
+    "summary": "Study for DAA final exam"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T11:10:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T11:00:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Wrap up cloud project",
+    "end_iso": "2025-12-12T13:10:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T11:10:00",
+    "summary": "Wrap up cloud project"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T13:20:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T13:10:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Call mom",
+    "end_iso": "2025-12-12T13:35:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T13:20:00",
+    "summary": "Call mom"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T13:45:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T13:35:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Hit the gym",
+    "end_iso": "2025-12-12T14:45:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T13:45:00",
+    "summary": "Hit the gym"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T14:55:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T14:45:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Meal prep",
+    "end_iso": "2025-12-12T15:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T14:55:00",
+    "summary": "Meal prep"
+  },
+  {
+    "description": "10 minute break",
+    "end_iso": "2025-12-12T16:05:00",
+    "event_type": "break",
+    "start_iso": "2025-12-12T15:55:00",
+    "summary": "Break"
+  },
+  {
+    "description": "Watch Stranger Things finale",
+    "end_iso": "2025-12-12T17:55:00",
+    "event_type": "task",
+    "start_iso": "2025-12-12T16:05:00",
+    "summary": "Watch Stranger Things finale"
+  }
+]
+Optimize response: [{'description': 'Study for DAA final exam', 'end_iso': '2025-12-12T11:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T09:00:00', 'summary': 'Study for DAA final exam'}, {'description': '10 minute break', 'end_iso': '2025-12-12T11:10:00', 'event_type': 'break', 'start_iso': '2025-12-12T11:00:00', 'summary': 'Break'}, {'description': 'Wrap up cloud project', 'end_iso': '2025-12-12T13:10:00', 'event_type': 'task', 'start_iso': '2025-12-12T11:10:00', 'summary': 'Wrap up cloud project'}, {'description': '10 minute break', 'end_iso': '2025-12-12T13:20:00', 'event_type': 'break', 'start_iso': '2025-12-12T13:10:00', 'summary': 'Break'}, {'description': 'Call mom', 'end_iso': '2025-12-12T13:35:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:20:00', 'summary': 'Call mom'}, {'description': '10 minute break', 'end_iso': '2025-12-12T13:45:00', 'event_type': 'break', 'start_iso': '2025-12-12T13:35:00', 'summary': 'Break'}, {'description': 'Hit the gym', 'end_iso': '2025-12-12T14:45:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:45:00', 'summary': 'Hit the gym'}, {'description': '10 minute break', 'end_iso': '2025-12-12T14:55:00', 'event_type': 'break', 'start_iso': '2025-12-12T14:45:00', 'summary': 'Break'}, {'description': 'Meal prep', 'end_iso': '2025-12-12T15:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T14:55:00', 'summary': 'Meal prep'}, {'description': '10 minute break', 'end_iso': '2025-12-12T16:05:00', 'event_type': 'break', 'start_iso': '2025-12-12T15:55:00', 'summary': 'Break'}, {'description': 'Watch Stranger Things finale', 'end_iso': '2025-12-12T17:55:00', 'event_type': 'task', 'start_iso': '2025-12-12T16:05:00', 'summary': 'Watch Stranger Things finale'}]
+Optimize request: tasks=[{'id': 't1', 'task': 'Study DAA (Block 1/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't2', 'task': 'Break', 'date': '2025-12-12', 'priority': 'P2', 'duration': '15m'}, {'id': 't3', 'task': 'Study DAA (Block 2/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't4', 'task': 'Wrap up cloud project (Block 1/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't5', 'task': 'Break', 'date': '2025-12-12', 'priority': 'P2', 'duration': '15m'}, {'id': 't6', 'task': 'Wrap up cloud project (Block 2/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't7', 'task': 'Call mom', 'date': '2025-12-12', 'priority': 'P2', 'duration': '15m'}, {'id': 't8', 'task': 'Go to gym', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't9', 'task': 'Meal prep', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't10', 'task': 'Watch Stranger Things finale (Block 1/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '60m'}, {'id': 't11', 'task': 'Break', 'date': '2025-12-12', 'priority': 'P2', 'duration': '15m'}, {'id': 't12', 'task': 'Watch Stranger Things finale (Block 2/2)', 'date': '2025-12-12', 'priority': 'P2', 'duration': '50m'}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T18:00:00'}]
+Error while optimizing schedule
+Traceback (most recent call last):
+  File "/home/pavithra/Desktop/Projects/calendly/src/executor.py", line 101, in optimize_schedule_endpoint
+    schedule = optimize_schedule(req.tasks, free_windows)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/planner.py", line 46, in optimize_schedule
+    resp = exe.generate_json(system_prompt, f"Optimize this schedule:\n{payload}")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/llm.py", line 32, in generate_json
+    response = model.generate_content(user_prompt)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/generativeai/generative_models.py", line 331, in generate_content
+    response = self._client.generate_content(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/ai/generativelanguage_v1beta/services/generative_service/client.py", line 835, in generate_content
+    response = rpc(
+               ^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/gapic_v1/method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+           ^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/retry/retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/retry/retry_unary.py", line 147, in retry_target
+    result = target()
+             ^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavithra/Desktop/Projects/calendly/src/venv/lib/python3.12/site-packages/google/api_core/grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash
+Please retry in 28.04847102s. [links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-flash"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 20
+}
+, retry_delay {
+  seconds: 28
+}
+]
+Optimize request: tasks=[{'id': 't1', 'name': 'Study for DAA final exam', 'priority': 'P2', 'duration_minutes': 120}, {'id': 't2', 'name': 'Wrap up cloud project', 'priority': 'P2', 'duration_minutes': 120}, {'id': 't3', 'name': 'Call mom', 'priority': 'P2', 'duration_minutes': 15}, {'id': 't4', 'name': 'Hit the gym', 'priority': 'P2', 'duration_minutes': 60}, {'id': 't5', 'name': 'Do meal prep', 'priority': 'P2', 'duration_minutes': 60}, {'id': 't6', 'name': 'Watch Stranger Things finale', 'priority': 'P2', 'duration_minutes': 110}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T18:00:00'}]
+Optimize response: [{'id': 't1', 'name': 'Study for DAA final exam', 'event_type': 'task', 'start': '2025-12-12T09:00:00', 'end': '2025-12-12T11:00:00'}, {'event_type': 'break', 'start': '2025-12-12T11:00:00', 'end': '2025-12-12T11:10:00'}, {'id': 't2', 'name': 'Wrap up cloud project', 'event_type': 'task', 'start': '2025-12-12T11:10:00', 'end': '2025-12-12T13:10:00'}, {'event_type': 'break', 'start': '2025-12-12T13:10:00', 'end': '2025-12-12T13:20:00'}, {'id': 't3', 'name': 'Call mom', 'event_type': 'task', 'start': '2025-12-12T13:20:00', 'end': '2025-12-12T13:35:00'}, {'event_type': 'break', 'start': '2025-12-12T13:35:00', 'end': '2025-12-12T13:45:00'}, {'id': 't4', 'name': 'Hit the gym', 'event_type': 'task', 'start': '2025-12-12T13:45:00', 'end': '2025-12-12T14:45:00'}, {'event_type': 'break', 'start': '2025-12-12T14:45:00', 'end': '2025-12-12T14:55:00'}, {'id': 't5', 'name': 'Do meal prep', 'event_type': 'task', 'start': '2025-12-12T14:55:00', 'end': '2025-12-12T15:55:00'}, {'event_type': 'break', 'start': '2025-12-12T15:55:00', 'end': '2025-12-12T16:05:00'}, {'id': 't6', 'name': 'Watch Stranger Things finale', 'event_type': 'task', 'start': '2025-12-12T16:05:00', 'end': '2025-12-12T17:55:00'}]
+Optimize request: tasks=[{'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't1', 'priority': 'P2', 'title': 'study for DAA final exam (part 1)'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 15, 'fixed_time_iso': None, 'id': 't2', 'priority': 'P2', 'title': 'break'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't3', 'priority': 'P2', 'title': 'study for DAA final exam (part 2)'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't4', 'priority': 'P2', 'title': 'wrap up cloud project (part 1)'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 15, 'fixed_time_iso': None, 'id': 't5', 'priority': 'P2', 'title': 'break'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't6', 'priority': 'P2', 'title': 'wrap up cloud project (part 2)'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 15, 'fixed_time_iso': None, 'id': 't7', 'priority': 'P2', 'title': 'call mom'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't8', 'priority': 'P2', 'title': 'hit the gym'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 60, 'fixed_time_iso': None, 'id': 't9', 'priority': 'P2', 'title': 'do some meal prep'}, {'constraint_type': 'flexible', 'estimated_duration_minutes': 110, 'fixed_time_iso': None, 'id': 't10', 'priority': 'P3', 'title': 'watch Stranger things finale'}] free_windows=[{'start': '2025-12-12T09:00:00', 'end': '2025-12-12T21:00:00'}]
+Optimize response: [{'description': 'study for DAA final exam (part 1)', 'end_iso': '2025-12-12T10:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T09:00:00', 'summary': 'study for DAA final exam (part 1)'}, {'description': '10-minute break', 'end_iso': '2025-12-12T10:10:00', 'event_type': 'break', 'start_iso': '2025-12-12T10:00:00', 'summary': 'Break'}, {'description': 'break', 'end_iso': '2025-12-12T10:25:00', 'event_type': 'task', 'start_iso': '2025-12-12T10:10:00', 'summary': 'break'}, {'description': 'study for DAA final exam (part 2)', 'end_iso': '2025-12-12T11:25:00', 'event_type': 'task', 'start_iso': '2025-12-12T10:25:00', 'summary': 'study for DAA final exam (part 2)'}, {'description': '10-minute break', 'end_iso': '2025-12-12T11:35:00', 'event_type': 'break', 'start_iso': '2025-12-12T11:25:00', 'summary': 'Break'}, {'description': 'wrap up cloud project (part 1)', 'end_iso': '2025-12-12T12:35:00', 'event_type': 'task', 'start_iso': '2025-12-12T11:35:00', 'summary': 'wrap up cloud project (part 1)'}, {'description': '10-minute break', 'end_iso': '2025-12-12T12:45:00', 'event_type': 'break', 'start_iso': '2025-12-12T12:35:00', 'summary': 'Break'}, {'description': 'break', 'end_iso': '2025-12-12T13:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T12:45:00', 'summary': 'break'}, {'description': 'wrap up cloud project (part 2)', 'end_iso': '2025-12-12T14:00:00', 'event_type': 'task', 'start_iso': '2025-12-12T13:00:00', 'summary': 'wrap up cloud project (part 2)'}, {'description': '10-minute break', 'end_iso': '2025-12-12T14:10:00', 'event_type': 'break', 'start_iso': '2025-12-12T14:00:00', 'summary': 'Break'}, {'description': 'call mom', 'end_iso': '2025-12-12T14:25:00', 'event_type': 'task', 'start_iso': '2025-12-12T14:10:00', 'summary': 'call mom'}, {'description': '10-minute break', 'end_iso': '2025-12-12T14:35:00', 'event_type': 'break', 'start_iso': '2025-12-12T14:25:00', 'summary': 'Break'}, {'description': 'hit the gym', 'end_iso': '2025-12-12T15:35:00', 'event_type': 'task', 'start_iso': '2025-12-12T14:35:00', 'summary': 'hit the gym'}, {'description': '10-minute break', 'end_iso': '2025-12-12T15:45:00', 'event_type': 'break', 'start_iso': '2025-12-12T15:35:00', 'summary': 'Break'}, {'description': 'do some meal prep', 'end_iso': '2025-12-12T16:45:00', 'event_type': 'task', 'start_iso': '2025-12-12T15:45:00', 'summary': 'do some meal prep'}, {'description': '10-minute break', 'end_iso': '2025-12-12T16:55:00', 'event_type': 'break', 'start_iso': '2025-12-12T16:45:00', 'summary': 'Break'}, {'description': 'watch Stranger things finale', 'end_iso': '2025-12-12T18:45:00', 'event_type': 'task', 'start_iso': '2025-12-12T16:55:00', 'summary': 'watch Stranger things finale'}, {'description': '10-minute break', 'end_iso': '2025-12-12T18:55:00', 'event_type': 'break', 'start_iso': '2025-12-12T18:45:00', 'summary': 'Break'}]
