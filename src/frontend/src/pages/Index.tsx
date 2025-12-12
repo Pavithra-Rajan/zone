@@ -18,7 +18,7 @@ const processingSteps = [
   "Finalizing your day...",
 ];
 
-type TimelineEvent = {
+  type TimelineEvent = {
   id: string;
   title: string;
   startHour: number;
@@ -127,7 +127,7 @@ const Index = () => {
         console.debug("Optimize API result:", optJson);
         const events: any[] = optJson.events || [];
 
-        // Map schedule events into timeline and update task start times when possible
+        // Map schedule events into timeline and update task start times when possible (exclude breaks)
         const scheduledProposed: TimelineEvent[] = events
           .filter((e) => e.event_type === "task")
           .map((e, idx) => {

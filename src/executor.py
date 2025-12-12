@@ -8,6 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
+logger.addHandler(logging.FileHandler("executor.log"))
 
 # NOTE: API key is stored here in the repo for convenience in this example.
 # In production, load from env vars or a secrets manager.
@@ -84,8 +85,7 @@ class GeminiExecutor:
         )
         
         try:
-            # logger.debug(f"Parser Response: {response.text}")
-            print(json.dumps(response.text, indent=2))
+            logger.debug(f"Parser Response: {response.text}")
             return json.loads(response.text)
         except json.JSONDecodeError:
             logger.error("Error: Gemini failed to produce valid JSON.")
@@ -120,7 +120,7 @@ class GeminiExecutor:
             f"Optimize this schedule:\n{prompt_payload}",
             generation_config=genai.GenerationConfig(response_schema=list[ScheduleEvent])
         )
-        print(json.dumps(response.text, indent=2))
+        logger.debug(f"Optimised schedule JSON {response.text}")
 
         return json.loads(response.text)
 
