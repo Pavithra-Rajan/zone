@@ -4,6 +4,7 @@ import typing_extensions as typing
 import google.generativeai as genai
 from dataclasses import dataclass
 import logging
+import google_calendar_api as gcal
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -34,7 +35,7 @@ class Task(typing.TypedDict):
     priority: str  # "P1", "P2", "P3"
     estimated_duration_minutes: int
     constraint_type: str  # "fixed" or "flexible"
-    fixed_time_iso: str | None  # e.g., "2023-10-27T12:00:00" or null
+    fixed_time_iso: Optional[str] = None  # e.g., "2023-10-27T12:00:00" or null
 
 class ScheduleEvent(typing.TypedDict):
     summary: str
@@ -72,7 +73,11 @@ app.add_middleware(
 def parse_brain_dump(req: ParseRequest):
     date_iso = req.date_iso or (os.environ.get("CURRENT_DATE") or None)
     try:
-        tasks = parse_goals_to_tasks(req.text, date_iso or "")
+
+        current_calendar_events = gcal_events = gcal.get_calendar_events()
+
+        tasks = parse_goals_to_tasks(req.text, date_iso or "", current_calendar_events)
+
         # Optionally log to memory
         try:
             log_memory({"type": "parse", "input": req.text, "tasks": tasks})
@@ -108,3 +113,4 @@ def optimize_schedule_endpoint(req: OptimizeRequest):
     except Exception as e:
         logger.exception("Error while optimizing schedule")
         raise HTTPException(status_code=500, detail=str(e))
+
