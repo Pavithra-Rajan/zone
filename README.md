@@ -19,7 +19,7 @@ With Zone, you simply type your to-dos in natural language, add constraints if n
 That’s 28 minutes saved, ready to spend on actually doing the work or, you know, grabbing a coffee.
 
 ### Ready to be in the zone?
-<img width="1901" height="1050" alt="image" src="https://github.com/user-attachments/assets/ffe2010a-1dbc-4584-ae67-1d1548d0e393" />
+<img width="1901" height="1050" alt="image" src="https://github.com/user-attachments/assets/7194252f-9ec6-412b-9adb-fd8e9bc5a372" />
 <img width="1901" height="1050" alt="image" src="https://github.com/user-attachments/assets/6d85adeb-bec0-42f4-9e28-557dc713d4b1" />
 
 #### Zone: Because your time deserves better than planning it.
