@@ -1,4 +1,6 @@
 # Zone
+[![Made with Love and Caffeine](https://img.shields.io/badge/Made%20with%20Love%20and%20Caffeine-9b59b6?style=for-the-badge&logo=coffeescript&logoColor=white)]() 
+<p align="left">By <a href="https://github.com/annasuzan">Anna Susan Cherian</a> & <a href="https://github.com/Pavithra-Rajan">Pavithra Rajan</a></p>
 
 Welcome! This repository is created as part of ODSC AI Hackathon 2025.
 
