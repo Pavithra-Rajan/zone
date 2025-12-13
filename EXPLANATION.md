@@ -2,85 +2,54 @@
 
 ## **Agent Workflow**
 
-This is a calendar task optimizer that transforms raw, unstructured task ideas into a time-optimized daily calendar. The system uses Google's Gemini AI to intelligently parse goals and schedule them into today's calendar windows.
+This is a calendar task optimizer that transforms raw, unstructured task ideas into a time-optimized daily calendar. The system uses Google's Gemini AI to intelligently parse goals and schedule them into today's calendar windows. By combining **LLM reasoning** with **real Google Calendar context**, this system behaves like a lightweight planning agent—turning human intent into a practical, conflict-free daily schedule.
+
+<img width="10285" height="7515" alt="sequence_diagram" src="https://github.com/user-attachments/assets/7d792bdf-a7c1-4466-821d-3a0228992449" />
+
+| Layer | Responsibility | Key Components |
+|-----|---------------|----------------|
+| Frontend | User input, animations, visualization | React, Vite, Tailwind CSS |
+| Backend API | Orchestration & business logic | FastAPI (`executor.py`) |
+| Planning Layer | Task parsing & scheduling logic | `planner.py` |
+| LLM Interface | Structured Gemini calls | `llm.py` |
+| Persistence | Append-only audit trail | `memory.py` |
+| External Services | Calendar context | Google Calendar API (OAuth) |
 
 ---
 
 ### **1. Frontend Initiation (React Component)**
 
-**User Action:**
-- User opens the application and views the main page
-- They type tasks/goals into the **Brain Dump Input** textarea (e.g., "Call mom at 1pm, gym for 1 hour, finish report")
-- They press `Cmd + Enter` or click "Optimize My Day" button
-
-**Component Triggered:**
-- `BrainDumpInput` component captures the text and calls `onSubmit(text)`
-- This triggers the `simulateProcessing()` function in the `Index.tsx` page
-
+### User Interaction
+- User opens the application
+- Enters tasks/goals into **Brain Dump Input**
+- Submits via **Cmd + Enter** or **Optimize My Day**
 ---
 
-### **2. Frontend Processing (Step-by-Step Animation)**
+## **2. Backend: Parse Phase (`/api/parse`)**
 
-**What happens:**
-1. The UI shows a "processing steps" animation with 7 steps:
-   - "Fetching existing calendar events..."
-   - "Parsing your brain dump..."
-   - "Identifying tasks and priorities..."
-   - ...and so on
-   
-2. **Concurrently** (while animation runs), it makes the first API call to the backend
-
----
-
-### **3. Backend: Parse Phase (`/api/parse` endpoint)**
-
-**Frontend HTTP Request:**
-```
-POST http://localhost:8000/api/parse
+```http
+POST /api/parse
 {
   "text": "Call mom at 1pm, gym for 1 hour, finish report",
   "date_iso": "2025-12-12"
 }
 ```
 
-## **Key modules (in `executor.py`):**
-
-1. **`/api/parse` endpoint receives request**: extracts `text` and `date_iso`
-
-2. **Calls `parse_goals_to_tasks(text, date_iso)`** (from `planner.py`)
-   
-3. **Inside `planner.py`:**
-   - Creates a `GeminiExecutor` instance (from `llm.py`)
-   - Builds a system prompt that tells Gemini to:
-     - Extract individual tasks from the brain dump
-     - Assign priority levels (P1/P2/P3)
-     - Estimate durations if missing
-     - Identify fixed time constraints (e.g., "at 1pm")
-     - Return structured JSON as a `list[Task]`
-   
-4. **Calls `GeminiExecutor.generate_json()`** (from `llm.py`)
-   - Configures Gemini 2.5-Flash model with:
-     - `response_mime_type: "application/json"` (forces JSON output)
-     - `response_schema: list[Task]` (validates structure)
-     - `temperature: 0.2` (deterministic, low randomness)
-   - Sends system prompt + user brain dump to Gemini API
-   - Returns Gemini's JSON response
-
-5. **Parses JSON response** : converts to Python list of dicts
-   
-6. **Logs to memory** (via `memory.py`):
-   - Appends `{"type": "parse", "input": text, "tasks": tasks}` to `memories.jsonl` file
-
-7. **Returns tasks to frontend**
-
-**Example Output:**
+### Responsibilities
+- Extract individual tasks
+- Assign priorities (P1 / P2 / P3)
+- Infer missing durations
+- Detect fixed-time constraints
+- Return schema-valid JSON
+The user provided input is
+```
+I want to study for DAA final exam, wrap up cloud computing final project, call mom, hit gym for 30 minutes, read for 30 minutes, meal prep, watch stranger things finale which is 110 minutes at 6 PM.
+```
 ```json
-{
-  "tasks": [
-    {
+  {
     "constraint_type": "null",
     "estimated_duration_minutes": 120,
-    "fixed_time_iso": "null",
+    "fixed_time_iso": null,
     "id": "t1",
     "priority": "P2",
     "title": "Study for DAA final exam"
@@ -88,108 +57,127 @@ POST http://localhost:8000/api/parse
   {
     "constraint_type": "null",
     "estimated_duration_minutes": 120,
-    "fixed_time_iso": "null",
+    "fixed_time_iso": null,
     "id": "t2",
     "priority": "P2",
-    "title": "Wrap up cloud project"
+    "title": "Wrap up cloud computing final project"
   },
   {
     "constraint_type": "null",
     "estimated_duration_minutes": 15,
-    "fixed_time_iso": "null",
+    "fixed_time_iso": null,
     "id": "t3",
     "priority": "P2",
     "title": "Call mom"
   },
   {
     "constraint_type": "null",
-    "estimated_duration_minutes": 60,
-    "fixed_time_iso": "null",
+    "estimated_duration_minutes": 30,
+    "fixed_time_iso": null,
     "id": "t4",
     "priority": "P2",
-    "title": "Hit the gym"
+    "title": "Hit gym"
+  },
+  {
+    "constraint_type": "null",
+    "estimated_duration_minutes": 30,
+    "fixed_time_iso": null,
+    "id": "t5",
+    "priority": "P2",
+    "title": "Read"
   },
   {
     "constraint_type": "null",
     "estimated_duration_minutes": 60,
-    "fixed_time_iso": "null",
-    "id": "t5",
+    "fixed_time_iso": null,
+    "id": "t6",
     "priority": "P2",
-    "title": "Do meal prep"
+    "title": "Meal prep"
   },
   {
-    "constraint_type": "null",
+    "constraint_type": "fixed",
     "estimated_duration_minutes": 110,
-    "fixed_time_iso": "null",
-    "id": "t6",
+    "fixed_time_iso": "2025-12-12T18:00:00",
+    "id": "t7",
     "priority": "P2",
     "title": "Watch Stranger Things finale"
   }
-   ]
-}
+
 ```
+---
+
+## **3. Google Calendar Integration (OAuth & Context Enrichment)**
+
+### Why Google Calendar Context Is Needed
+User calendars often already contain:
+- Meetings
+- Classes
+- Appointments
+- Travel blocks
+
+Without this context, an optimizer risks **double-booking** tasks.  
+To prevent this, the system integrates directly with **Google Calendar**.
 
 ---
 
-### **4. Frontend: Display Parsed Tasks**
+### How Google Calendar OAuth Works?
 
-**Frontend receives response and:**
+1. **User Authorization**
+   - User signs in with Google the first time when they attempt to sync the suggested schedule to their Google Calendat
+   - Grants read-only calendar access
 
-1. **Maps backend Task objects to frontend Task interface:**
-   - Extracts: `id`, `title`, `duration`, `priority` (1/2/3 based on P1/P2/P3)
-   - Stores in `tasks` state
+2. **OAuth Token Exchange**
+   - Google issues an access token
+   - Token is securely stored server-side
 
-2. **Displays in `TaskList` component:**
-   - Shows each task as a colored `TaskCard`
-   - Uses **8-color palette rotation** (blue, purple, pink, indigo, cyan, emerald, amber, rose)
-   - Color index cycles: `palette[taskIndex % 8]`
+3. **Calendar API Access**
+   - Backend calls Google Calendar API
 
-3. **Updates `proposedEvents` for tasks with fixed times:**
-   - Converts `fixed_time_iso` to decimal hours for timeline positioning
-   - Example: "13:00" (1 PM) sets `startHour: 13.0`
+4. **Event Retrieval**
+   - Events for the selected day are fetched
+   - Each event includes:
+     - `summary`
+     - `start_iso`
+     - `end_iso`
+     - `description` (optional)
 
 ---
 
-### **5. Backend: Optimize Phase (`/api/optimize` endpoint)**
+### When Calendar Events Are Fetched
+- **After task parsing**  
+- **Before schedule optimization**
 
-**After showing parsed tasks, frontend calls the optimize endpoint:**
-```
-POST http://localhost:8000/api/optimize
-{
-  "tasks": [the parsed tasks array],
-  "free_windows": null
-}
-```
+This ordering is intentional:
+- Parsing needs only raw user intent
+- Optimization needs **both tasks and real-world constraints**
 
-## Key Modules 
-### **Backend Flow (in `executor.py`):**
+---
 
-1. **`/api/optimize` endpoint receives request**: extracts parsed `tasks`
+### How Calendar Data Is Used by the Optimizer
 
-2. **Calls `optimize_schedule(tasks, free_windows)`** (from `planner.py`)
+| Step | Description |
+|---|---|
+| 1 | Existing calendar events are converted into **busy time blocks** |
+| 2 | Free time windows are derived implicitly |
+| 3 | Calendar events are injected into the **Gemini optimize prompt** |
+| 4 | Gemini is instructed to schedule tasks **around these events** |
 
-3. **Inside `planner.py`:**
-   - Creates another `GeminiExecutor` instance
-   - Builds a system prompt telling Gemini to:
-     - Schedule all tasks into today's available time windows
-     - Prioritize P1 tasks first, then P2, then P3
-     - Add 10-minute breaks between tasks if space allows
-     - Return structured JSON as `list[ScheduleEvent]`
-     - Skip low-priority tasks if no time available
-   
-4. **Calls `GeminiExecutor.generate_json()`:**
-   - Similar setup to parse phase (JSON mode, schema validation, low temperature)
-   - Sends tasks + available windows to Gemini
-   - Gemini returns scheduled times for each task
+This ensures:
+- No overlaps with meetings
+- Tasks fit naturally between commitments
+- The final schedule reflects the user’s real availability
 
-5. **Parses JSON response**: converts to Python list of ScheduleEvent dicts
+---
 
-6. **Logs to memory:**
-   - Appends `{"type": "optimize", "tasks": input_tasks, "events": scheduled_events}` to `memories.jsonl`
+## **4. Backend: Optimize Phase (`/api/optimize`)**
 
-7. **Returns scheduled events to frontend**
+### Optimization Rules
+- Respect existing Google Calendar events
+- Schedule only within free windows
+- Prioritize tasks: P1, P2, P3
+- Insert 10-minute breaks when possible
+- Skip low-priority tasks if time runs out
 
-**Example Output:**
 ```json
 {
   "events":   {
@@ -264,109 +252,32 @@ POST http://localhost:8000/api/optimize
   },
   {
     "description": "Watch Stranger Things finale",
-    "end_iso": "2025-12-12T17:55:00",
+    "end_iso": "2025-12-12T19:55:00",
     "event_type": "task",
-    "start_iso": "2025-12-12T16:05:00",
+    "start_iso": "2025-12-12T18:05:00",
     "summary": "Watch Stranger Things finale"
   }
 }
 ```
+## **5. Data Persistence**
+
+- Append-only `memories.jsonl`
+- Stores:
+  - Parsed tasks
+  - Retrieved calendar events
+  - Optimized schedules
+- Provides a complete audit trail for observability and debugging
 
 ---
 
-### **6. Frontend: Display Optimized Schedule**
+## **Known Limitations**
 
-**Frontend receives optimize response and:**
-
-1. **Maps ScheduleEvent objects to TimelineEvent objects:**
-   - Filters for `event_type === "task"` (hides breaks)
-   - Converts ISO timestamps to decimal hours:
-     - `"2025-12-12T14:00:00"` → `startHour: 14.0`
-     - `"2025-12-12T16:00:00"` → duration spans 2 hours → `duration: 2.0`
-
-2. **Updates task start times:**
-   - Matches tasks in `TaskList` by title
-   - Adds `startTime` property to tasks if they got scheduled
-
-3. **Updates `proposedEvents` in Timeline:**
-   - Replaces placeholder proposed events with actual optimized schedule
+| Area | Limitation |
+|------|------------|
+| Performance | ~10s parse, ~30s optimize calls|
+| Security | No prompt-injection guardrails |
+| Assumptions | Trusts user input |
+| Scaling | Single-user focused |
 
 ---
-
-### **7. Frontend: Timeline Visualization**
-
-**`Timeline` component renders the visual schedule:**
-
-1. **Time Grid (8 AM - 8 PM):**
-   - Shows 13 rows, one per hour
-   - Each row labeled with hour (08:00, 09:00, ..., 20:00)
-   - Each row is 64px tall
-
-2. **Event Positioning:**
-   - Each event positioned absolutely within the timeline
-   - `top = (startHour - 8) * 64` (offset from 8 AM baseline)
-   - `height = duration * 64` (1 hour = 64px)
-
-3. **Time Formatting:**
-   - Function `formatTime(decimalHour)` converts decimals to HH:MM
-   - Example: `14.25` (2:15 PM) → `"14:15"`
-   - Prevents NaN by properly calculating hours and minutes
-
-4. **Event Rendering:**
-   - Each event is a colored box with:
-     - Title (task name)
-     - Time range (e.g., "14:00 - 16:00")
-     - CSS class distinguishing type: `event-existing` or `event-proposed`
-
-5. **Loading State:**
-   - If `isProcessing === true`, shows spinning calendar icon + "Loading your optimized schedule..."
-   - Prevents showing NaN values during API calls
-
----
-
-### **8. Data Persistence (Memory Module)**
-
-**Throughout the process, `memory.py` logs entries:**
-
-- Appends to `memories.jsonl` (append-only format)
-- Each line is a JSON object with timestamp, operation type, inputs, and outputs
-- Serves as an audit trail for:
-  - What user submitted
-  - What tasks were parsed
-  - What schedule was generated
-  - Can be used for future refinement or analytics
-
----
-
-### **Key Design Patterns**
-
-**1. Modular Separation:**
-- `llm.py`: Gemini API instance
-- `planner.py`: Business logic (knows task/schedule concepts)
-- `memory.py`: Persistence (append-only audit trail)
-- `executor.py`: HTTP server (orchestrates the above)
-
-**2. Concurrent Processing:**
-- Frontend shows animation while backend API calls execute
-- Prevents UI blocking on network latency
-
-**3. Type Safety:**
-- TypedDict schemas (`Task`, `ScheduleEvent`) define contracts between frontend/backend
-- Gemini enforces JSON schema validation
-- Frontend maps responses to typed interfaces
-
-**4. JSON-First Communication:**
-- All backend responses are structured JSON
-- Frontend safely parses and transforms for UI display  
-
-
-## Observability & Testing
-
-The logs have been saved in `src/executor.log`. 
-
-## Known Limitations
-
-Be honest about edge cases or performance bottlenecks:
-- Gemini API call to optimize takes about ~10 seconds for parse endpoint and ~30 seconds for optimization and forming the timeline.
-- Not accounted for prompt injection and have not added guard rails to protect it. We presume that the user will be kind.
 
