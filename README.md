@@ -1,3 +1,9 @@
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/86889416-b02b-4944-a04f-7b9e9f5c8f8d"
+       style="width: 100%; max-width: 100%;" />
+</div>
+
+
 # Zone
 [![Made with Love and Caffeine](https://img.shields.io/badge/Made%20with%20Love%20and%20Caffeine-9b59b6?style=for-the-badge&logo=coffeescript&logoColor=white)]() 
 <p align="left">By <a href="https://github.com/annasuzan">Anna Susan Cherian</a> & <a href="https://github.com/Pavithra-Rajan">Pavithra Rajan</a></p>
