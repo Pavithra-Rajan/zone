@@ -70,7 +70,6 @@ tree -I "node_modules|__pycache__|venv"
 ├── logs
 ├── README.md
 └── src
-    ├── client_secret_588465002822-qd2mph5ci7utptfs4073p9vc0sldihqm.apps.googleusercontent.com.json
     ├── executor.log
     ├── executor.py
     ├── frontend
