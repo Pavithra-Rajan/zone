@@ -712,7 +712,32 @@ function compilePath(path, caseSensitive, end) {
   } else if (path !== "" && path !== "/") {
     regexpSource += "(?:(?=\\/|$))";
   } else ;
+  // Add an import for a regex safety checker library.
+  // For example, if using 'safe-regex' (you would need to install it: npm install safe-regex)
+  import { isSafe } from 'safe-regex';
+
+  // ... (rest of the file)
+  regexpSource += "(?:(?=\\/|$))";
+  } else ;
+  // CWE-1333: Inefficient Regular Expression Complexity (ReDoS) vulnerability.
+  // The 'regexpSource' string, if crafted maliciously or overly complex,
+  // could lead to catastrophic backtracking, causing performance degradation
+  // or a denial-of-service (ReDoS) attack.
+  //
+  // Fix: Validate the 'regexpSource' using a robust regex safety checker
+  // (e.g., 'safe-regex') before creating the RegExp object. If the pattern
+  // is deemed unsafe, an error is thrown to prevent the vulnerability.
+  if (!isSafe(regexpSource)) {
+  // Log the problematic regex or throw a more specific error for debugging
+  console.error(
+  "Detected potentially unsafe regular expression pattern (ReDoS risk) for route:",
+  regexpSource
+  );
+  throw new Error("Unsafe regular expression pattern detected: potential ReDoS vulnerability.");
+  }
   let matcher = new RegExp(regexpSource, caseSensitive ? void 0 : "i");
+  return [matcher, params];
+  }
   return [matcher, params];
 }
 function decodePath(value) {
